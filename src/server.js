@@ -26,6 +26,13 @@ app.use("/requests", requestRoutes);
 
 app.use("/schedules", scheduleRoutes);
 
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        timestamp: new Date()
+    });
+});
+
 const PORT = process.env.PORT || 3000;
 
 async function startServer() {

@@ -17,6 +17,7 @@ export const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 export async function testConnection() {
     try {
+        await sequelize.authenticate();
         await sequelize.sync();
 
         console.log("Banco conectado com sucesso!");
