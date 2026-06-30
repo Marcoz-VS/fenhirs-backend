@@ -24,13 +24,19 @@ export async function register(req, res) {
         });
 
         if (!validation.success) {
-            console.log('Validation error:', validation.error);
+            console.log('Validation error details:', validation.error.errors);
+            
+            // Converte corretamente os erros do Zod
+            const details = validation.error.errors.map(err => ({
+                field: err.path[0] || 'unknown',
+                message: err.message
+            }));
+            
+            console.log('Formatted details:', details);
+            
             return res.status(400).json({
                 error: "Dados de registro inválidos",
-                details: validation.error.errors.map(err => ({
-                    field: err.path.join("."),
-                    message: err.message
-                }))
+                details: details
             });
         }
 
