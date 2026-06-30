@@ -24,6 +24,7 @@ export async function register(req, res) {
         });
 
         if (!validation.success) {
+            console.log('Validation error:', validation.error);
             return res.status(400).json({
                 error: "Dados de registro inválidos",
                 details: validation.error.errors.map(err => ({
@@ -67,6 +68,7 @@ export async function register(req, res) {
         });
 
     } catch (error) {
+        console.error('Register error:', error);
         return res.status(500).json({
             error: error.message
         });
