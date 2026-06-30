@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { User } from "../Models/index.js";
+import { registerSchema } from "../Schemas/registerSchema.js";
 
 export async function register(req, res) {
     try {
@@ -12,6 +13,25 @@ export async function register(req, res) {
             rg,
             cac
         } = req.body;
+
+        // Validar dados com schema
+        const validation = registerSchema.safeParse({
+            name,
+            email,
+            password,
+            rg,
+            cac
+        });
+
+        if (!validation.success) {
+            return res.status(400).json({
+                error: "Dados de registro inválidos",
+                details: validation.error.errors.map(err => ({
+                    field: err.path.join("."),
+                    message: err.message
+                }))
+            });
+        }
 
         const userExists = await User.findOne({
             where: { email }
@@ -25,11 +45,14 @@ export async function register(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Limpar RG removendo pontos e traços antes de salvar
+        const cleanedRg = rg.replace(/[.\-]/g, "");
+
         const user = await User.create({
             name,
             email,
             password: hashedPassword,
-            rg,
+            rg: cleanedRg,
             cac,
         });
 
