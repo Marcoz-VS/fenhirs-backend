@@ -14,8 +14,6 @@ export async function register(req, res) {
             cac
         } = req.body;
 
-        console.log('📝 Dados recebidos:', { name, email, password, rg, cac });
-
         // Validar dados com schema
         const validation = registerSchema.safeParse({
             name,
@@ -25,27 +23,12 @@ export async function register(req, res) {
             cac
         });
 
-        console.log('🔍 Resultado da validação:', {
-            success: validation.success,
-            error: validation.error,
-            errorType: validation.error?.constructor?.name,
-            errorKeys: Object.keys(validation.error || {}),
-        });
-
         if (!validation.success) {
-            console.log('❌ Validação falhou');
-            console.log('Erro completo:', JSON.stringify(validation.error, null, 2));
-            
-            // Tenta acessar os erros de várias formas
-            const errorArray = validation.error?.errors || validation.error?.issues || [];
-            console.log('Array de erros:', errorArray);
-            
-            const details = errorArray.map(err => ({
-                field: err.path?.[0] || err.field || 'unknown',
+            // Zod armazena os erros em .issues
+            const details = validation.error.issues.map(err => ({
+                field: err.path[0] || 'unknown',
                 message: err.message
             }));
-            
-            console.log('✅ Detalhes formatados:', details);
             
             return res.status(400).json({
                 error: "Dados de registro inválidos",
@@ -87,8 +70,6 @@ export async function register(req, res) {
         });
 
     } catch (error) {
-        console.error('❌ Register error:', error);
-        console.error('Stack:', error.stack);
         return res.status(500).json({
             error: error.message
         });
