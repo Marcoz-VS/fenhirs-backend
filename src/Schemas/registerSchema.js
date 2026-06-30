@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const validateCPF = (cpf: string) => {
+// Removido o ": string" do parâmetro cpf
+const validateCPF = (cpf) => {
   const cleanCPF = cpf.replace(/[^\d]/g, "");
   
   if (cleanCPF.length !== 11 || /^(\d)\1{10}$/.test(cleanCPF)) return false;
@@ -46,7 +47,7 @@ export const registerSchema = z.object({
     .string()
     .min(11, "A CIN deve ter pelo menos 11 caracteres")
     .max(14, "A CIN deve ter no máximo 14 caracteres")
-    .transform((val) => val.replace(/[^\d]/g, ""))
+    .transform((val) => val.replace(/[^\d]/g, "")) 
     .refine((val) => validateCPF(val), {
       message: "Número de CIN (CPF) inválido",
     }),
