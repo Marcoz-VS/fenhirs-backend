@@ -43,10 +43,11 @@ export const registerSchema = z.object({
     .regex(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
     .regex(/[0-9]/, "Senha deve conter pelo menos um número"),
   
-  cin: z
+  // Mantém o nome 'rg' para o frontend, mas valida as regras da CIN (CPF)
+  rg: z
     .string()
-    .min(11, "A CIN deve ter pelo menos 11 caracteres")
-    .max(14, "A CIN deve ter no máximo 14 caracteres")
+    .min(11, "A identidade deve ter pelo menos 11 caracteres")
+    .max(14, "A identidade deve ter no máximo 14 caracteres")
     .transform((val) => val.replace(/[^\d]/g, "")) 
     .refine((val) => validateCPF(val), {
       message: "Número de CIN (CPF) inválido",
