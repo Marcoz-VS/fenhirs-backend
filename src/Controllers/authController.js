@@ -84,9 +84,10 @@ export async function login(req, res) {
             where: { email }
         });
 
+        // ✅ Mensagem idêntica para ambos os casos
         if (!user) {
             return res.status(401).json({
-                error: "Usuário inválido"
+                error: "Email ou senha inválidos"
             });
         }
 
@@ -95,9 +96,10 @@ export async function login(req, res) {
             user.password
         );
 
+        // ✅ Mesma mensagem aqui também
         if (!passwordMatch) {
             return res.status(401).json({
-                error: "Senha inválida"
+                error: "Email ou senha inválidos"
             });
         }
 
@@ -132,6 +134,5 @@ export async function login(req, res) {
         return res.status(500).json({
             error: error.message
         });
-
     }
 }
